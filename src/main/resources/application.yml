@@ -1,0 +1,12 @@
+allowed:
+  origins: http://localhost:5173
+
+spring:
+  application:
+    name: site
+  datasource:
+    url: jdbc:mysql://localhost:3306/{schema}?useSSL=false&allowPublicKeyRetrieval=true
+    username:
+    password:
+    jooq:
+      sql-dialect: MYSQL

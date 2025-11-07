@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="https://www.jooq.org/xsd/jooq-codegen-3.20.0.xsd">
+
+    <jdbc>
+        <driver>com.mysql.cj.jdbc.Driver</driver>
+        <url>jdbc:mysql://localhost:3306/{schema}</url>
+        <user></user>
+        <password></password>
+    </jdbc>
+
+    <generator>
+        <name>org.jooq.codegen.JavaGenerator</name>
+
+        <database>
+            <name>org.jooq.meta.mysql.MySQLDatabase</name>
+            <inputSchema>creechy</inputSchema>
+            <includes>.*</includes>
+        </database>
+
+        <target>
+            <packageName>com.creechy.site.jooq.model</packageName>
+            <directory>C:\Users\hamza\git\creechy-backend\src\main\generated</directory>
+        </target>
+    </generator>
+</configuration>
