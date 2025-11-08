@@ -10,7 +10,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractAuthenticationFilterConfigurer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -52,7 +51,6 @@ public class SecurityConfig {
                                                     true); // critical for session cookies
                                             return corsConfig;
                                         }))
-                .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
 
                 // Return 401 instead of redirect on unauthenticated access
@@ -60,10 +58,15 @@ public class SecurityConfig {
                         ex ->
                                 ex.authenticationEntryPoint(
                                         new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .authorizeHttpRequests(
+                        auth ->
+                                auth.requestMatchers("/users/login", "/users/create")
+                                        .permitAll()
+                                        .anyRequest()
+                                        .authenticated())
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
+                .logout(logout -> logout.logoutUrl("/users/logout").deleteCookies("JSESSIONID"));
 
         return http.build();
     }

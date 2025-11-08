@@ -1,6 +1,6 @@
 package com.creechy.site.user.service;
 
-import com.creechy.site.jooq.model.tables.records.UsersRecord;
+import com.creechy.site.jooq.model.tables.records.UserRecord;
 import com.creechy.site.user.dao.UserDao;
 import com.creechy.site.user.request.UserRequest;
 import com.creechy.site.util.security.SecurityUtil;
@@ -37,7 +37,7 @@ public class UserService implements UserDetailsService {
 
     public boolean createUser(UserRequest request) {
         if (dao.checkUsernameAvailable(request.getUsername())) {
-            var user = new UsersRecord();
+            var user = new UserRecord();
             user.setUsername(request.getUsername());
             user.setHashedPassword(securityUtil.hashPassword(request.getPassword()));
             return dao.createUser(user);

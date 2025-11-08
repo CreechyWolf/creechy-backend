@@ -3,9 +3,9 @@
 
     <jdbc>
         <driver>com.mysql.cj.jdbc.Driver</driver>
-        <url>jdbc:mysql://localhost:3306/{schema}</url>
-        <user></user>
-        <password></password>
+        <url>jdbc:mysql://localhost:3306/creechy</url>
+        <user>root</user>
+        <password>P1@820pi4W</password>
     </jdbc>
 
     <generator>
@@ -19,7 +19,7 @@
 
         <target>
             <packageName>com.creechy.site.jooq.model</packageName>
-            <directory>C:\Users\hamza\git\creechy-backend\src\main\generated</directory>
+            <directory>src/main/generated</directory>
         </target>
     </generator>
 </configuration>

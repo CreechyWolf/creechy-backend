@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @GetMapping("/secret")
-    @RolesAllowed({"ROLE_USER"})
+    @RolesAllowed({"USER"})
     public ResponseEntity<?> secretEndpoint() {
         return ResponseEntity.ok("WELCOME!!");
     }
