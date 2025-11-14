@@ -60,7 +60,12 @@ public class SecurityConfig {
                                         new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .authorizeHttpRequests(
                         auth ->
-                                auth.requestMatchers("/users/login", "/users/create")
+                                auth.requestMatchers(
+                                                "/users/login",
+                                                "/users/create",
+                                                "/iq/leaderboard",
+                                                "/visitor/track",
+                                                "/visitor/heatmap")
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())

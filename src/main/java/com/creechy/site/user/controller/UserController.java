@@ -45,7 +45,13 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@RequestBody UserRequest request) {
-        return ResponseEntity.ok(service.createUser(request));
+        boolean created = service.createUser(request);
+
+        if (created) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/secret")

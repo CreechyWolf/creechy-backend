@@ -36,12 +36,16 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean createUser(UserRequest request) {
-        if (dao.checkUsernameAvailable(request.getUsername())) {
+        if (!dao.checkUsernameAvailable(request.getUsername())) {
             var user = new UserRecord();
             user.setUsername(request.getUsername());
             user.setHashedPassword(securityUtil.hashPassword(request.getPassword()));
             return dao.createUser(user);
         }
         return false;
+    }
+
+    public UserRecord loadUserRecordByUsername(String username) {
+        return dao.fetchUser(username);
     }
 }
