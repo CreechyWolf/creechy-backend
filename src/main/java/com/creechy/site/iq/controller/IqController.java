@@ -4,7 +4,9 @@ import com.creechy.site.iq.dto.IqDTO;
 import com.creechy.site.iq.service.IqService;
 import com.creechy.site.user.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +25,7 @@ public class IqController {
     @RolesAllowed({"USER"})
     @PostMapping("/update")
     public ResponseEntity<?> updateIqCount(@AuthenticationPrincipal UserDetails userDetails) {
-        if (!service.updateUserIq(userDetails)) {
+        if (!service.updateUserIq(userDetails, 0)) {
             return ResponseEntity.badRequest().build();
         } else {
             return ResponseEntity.ok().build();
@@ -39,5 +41,21 @@ public class IqController {
     @GetMapping("/leaderboard")
     public ResponseEntity<List<IqDTO>> fetchLeaderboardStats() {
         return ResponseEntity.ok(service.getTopTenUsers());
+    }
+
+    @PostMapping("/upload-session")
+    public ResponseEntity<?> uploadGuestIq(
+            @RequestBody Map<String, Integer> body,
+            HttpServletRequest request,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        request.getSession().removeAttribute("guestIq");
+        int amount = body.getOrDefault("amount", 0);
+        if (amount <= 0) {
+            return ResponseEntity.ok().build();
+        }
+        log.info("Uploading {} guest IQ points for user {}", amount, userDetails.getUsername());
+        service.updateUserIq(userDetails, amount);
+
+        return ResponseEntity.ok().build();
     }
 }

@@ -4,12 +4,15 @@ import com.creechy.site.user.request.UserRequest;
 import com.creechy.site.user.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +36,6 @@ public class UserController {
         securityContext.setAuthentication(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        // Persist the security context into the session
         httpRequest
                 .getSession(true)
                 .setAttribute(
@@ -54,9 +56,9 @@ public class UserController {
         }
     }
 
-    @GetMapping("/secret")
+    @GetMapping("/current-user")
     @RolesAllowed({"USER"})
-    public ResponseEntity<?> secretEndpoint() {
-        return ResponseEntity.ok("WELCOME!!");
+    public ResponseEntity<?> isLoggedIn(@AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(Map.of("username", userDetails.getUsername()));
     }
 }

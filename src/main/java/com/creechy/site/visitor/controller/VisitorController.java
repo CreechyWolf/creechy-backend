@@ -1,5 +1,7 @@
 package com.creechy.site.visitor.controller;
 
+import static org.springframework.util.StringUtils.hasText;
+
 import com.creechy.site.visitor.dto.VisitorDTO;
 import com.creechy.site.visitor.service.VisitorService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,17 +21,22 @@ public class VisitorController {
 
     @PostMapping("/track")
     public ResponseEntity<?> trackVisitor(HttpServletRequest request) {
-        String ipAddress = request.getHeader("X-Forwarded-For");
-        if (ipAddress == null || ipAddress.isEmpty()) {
-            ipAddress = request.getRemoteAddr();
-        } else {
-            ipAddress = ipAddress.split(",")[0].trim();
-        }
+        String ipAddress = getIpAddress(request);
         if (!service.saveVisitor(ipAddress)) {
             return ResponseEntity.badRequest().build();
         } else {
             return ResponseEntity.ok().build();
         }
+    }
+
+    private static String getIpAddress(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-Forwarded-For");
+        if (!hasText(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+        } else {
+            ipAddress = ipAddress.split(",")[0].trim();
+        }
+        return ipAddress;
     }
 
     @GetMapping("/heatmap")

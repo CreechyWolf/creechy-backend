@@ -1,5 +1,6 @@
 package com.creechy.site.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -60,18 +61,23 @@ public class SecurityConfig {
                                         new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                 .authorizeHttpRequests(
                         auth ->
-                                auth.requestMatchers(
-                                                "/users/login",
-                                                "/users/create",
-                                                "/iq/leaderboard",
-                                                "/visitor/track",
-                                                "/visitor/heatmap")
+                                auth.requestMatchers("/users/login", "/users/create")
                                         .permitAll()
+                                        .requestMatchers("/visitor/**", "/iq/**")
+                                        .permitAll()
+                                        .requestMatchers("/users/current-user")
+                                        .hasRole("USER")
                                         .anyRequest()
                                         .authenticated())
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                .logout(logout -> logout.logoutUrl("/users/logout").deleteCookies("JSESSIONID"));
+                .logout(
+                        logout ->
+                                logout.logoutUrl("/users/logout")
+                                        .logoutSuccessHandler(
+                                                (req, res, auth) ->
+                                                        res.setStatus(HttpServletResponse.SC_OK))
+                                        .deleteCookies("JSESSIONID"));
 
         return http.build();
     }
